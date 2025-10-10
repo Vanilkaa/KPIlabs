@@ -1,0 +1,49 @@
+@startuml
+
+entity "Customer" as Customer {
+    *Cusomer_id : int
+    --
+    Name : string
+    Email : string
+}
+
+entity "Payment" as Payment {
+    *Payment_id : int
+    --
+    Amount : int
+    Method : int
+}
+
+entity "Order" as Order {
+    *Order_id : int
+    --
+    Product : int
+    Total : int
+}
+
+entity "ProductCategory" as ProductCategory {
+    *Catergory_id : int
+    --
+    Name : string
+    Description : string
+}
+
+entity "ShoppingCart" as ShoppingCart {
+    Product_id : int
+    Product_name : string
+    Quantity : int
+    Total : int
+}
+
+entity "Product" as Product {
+    *Catergory_id : int
+    --
+    Product : int
+    Total : int
+}
+
+Customer ||--|| ShoppingCart : adds products to
+Customer ||--|| Payment : makes
+Customer ||--o{ Order : places
+ShoppingCart ||--o{ Product : contains
+Product }--{ ProductCategory
