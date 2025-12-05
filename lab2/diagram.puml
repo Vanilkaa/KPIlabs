@@ -1,0 +1,50 @@
+@startuml
+
+left to right direction
+
+actor Customer
+actor Seller
+
+usecase "View Products" as VP
+usecase "Make an Order" as MO
+usecase "Make a Payment" as MP
+usecase "View Shopping Cart" as VSC
+usecase "Modify Shopping Cart" as MSC
+usecase "View Product Categories" as VPC
+
+usecase "Change Products" as CP
+usecase "Change Product Price" as CPP
+usecase "Change Product Description" as CPD
+
+usecase "View Orders" as VO
+usecase "View Payments" as VPay
+usecase "Change Product Categories" as CPC
+
+Customer --> VP
+Customer --> VSC
+Customer --> MO
+Customer --> MSC
+Customer --> MP
+Customer --> VPC
+
+Seller --> CP
+Seller --> CPP
+Seller --> CPD
+Seller --> VO
+Seller --> VPay
+Seller --> CPC
+
+CP ..> VP : Use
+CPP ..> VP : Use
+CPD ..> VP : Use
+
+VSC ..> VP : Use
+MSC ..> VSC : Use
+MO ..> VSC : Use
+MO ..> MP : Use
+
+VO ..> VPay : Use
+
+CPC ..> VPC : Use
+
+@enduml
