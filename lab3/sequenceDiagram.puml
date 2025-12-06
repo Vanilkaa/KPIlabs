@@ -1,0 +1,34 @@
+@startuml
+
+skinparam style strictuml
+
+actor "Customer" as C
+participant "Server" as S
+actor "Seller" as M
+
+C -> S : 1. Visit website
+activate C
+activate S
+S -> C : 2. Send products page
+C -> S : 3. Select product
+S -> C : 4. Send product page
+C -> S : 5. Add product to the shopping cart
+C -> S : 6. Create order
+S -> C : 7. Send checkout page
+C -> S : 8. Send delivery details
+S -> C : 9. Send payment page
+C -> S : 10. Send payment data
+S -> C : 11. Redirect to the confirmation page
+deactivate C
+S -> M : 12. Notify seller about new order
+activate M
+M -> S : 13. View order details
+S -> M : 14. Show order details
+M -> S : 15. Confirm order and provide delivery date
+deactivate M
+S -> C : 16. Send order confirmation and delivlery details
+deactivate S
+activate C
+deactivate C
+
+@enduml
