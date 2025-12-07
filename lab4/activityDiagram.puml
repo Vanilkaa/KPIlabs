@@ -1,0 +1,26 @@
+@startuml
+
+|Customer|
+start
+:Visit website;
+:Put products into shopping cart;
+:Make an order;
+
+|Server|
+:Order;
+:Save the order;
+:Notify Seller;
+:Order\nNotification>
+
+|Seller|
+:Order\nNotification<
+:Read notification;
+:Process the order;
+:Delivery Details;
+
+|Server|
+:Notify Customer;
+:Delivery\nNotification>
+stop
+
+@enduml
