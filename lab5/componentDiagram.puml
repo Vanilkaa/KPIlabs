@@ -1,0 +1,115 @@
+@startuml Online_Shop_API_Service
+
+!define COMPONENT_BG_COLOR #FFFFFF
+!define SERVICE_BG_COLOR #FFF4E1
+!define CONTROLLER_BG_COLOR #E1F5FF
+!define LAYER_BG_COLOR #FAFAFA
+!define ADAPTER_BG_COLOR #F0F0F0
+
+skinparam componentStyle uml2
+skinparam linetype polyline
+left to right direction
+
+skinparam component {
+  BackgroundColor COMPONENT_BG_COLOR
+  BorderColor Black
+}
+
+skinparam package {
+  BackgroundColor White
+}
+
+skinparam port {
+  FontSize 10
+  FontColor Black
+}
+
+node "Seller" as ext_seller
+node "Bank API" as ext_bank
+database "PostgreSQL" as ext_db
+
+component "HTTP Router" as router
+
+package "Online Shop API service" {
+
+    package "Source code" {
+        
+        component "Json Schema Validator" as validator
+        () "Validator" as I_Validator
+        validator -left- I_Validator
+
+        package "Services" as LayerServices {
+             component "Payment Service" as sPay SERVICE_BG_COLOR
+             component "Catalogue Service" as sCat SERVICE_BG_COLOR
+             component "Order Service" as sOrder SERVICE_BG_COLOR
+             
+             () "Payment Service Realization" as I_SvcPay
+             () "Product Service Realization" as I_SvcCat
+             () "Order Service Realization" as I_SvcOrder
+             
+             sPay -up- I_SvcPay
+             sCat -up- I_SvcCat
+             sOrder -up- I_SvcOrder
+        }
+
+        package "Controllers" as LayerControllers {
+            component "Payment Controller" as cPay CONTROLLER_BG_COLOR
+            component "Catalogue Controller" as cCat CONTROLLER_BG_COLOR
+            component "Order Controller" as cOrder CONTROLLER_BG_COLOR
+            
+            port "Payment EntryPoints" as p_ctrl_pay
+            port "Catalogue EntryPoints" as p_ctrl_cat
+            port "Order EntryPoints" as p_ctrl_order
+            
+            p_ctrl_pay -right-> cPay
+            p_ctrl_cat -right-> cCat
+            p_ctrl_order -right-> cOrder
+        }
+        
+        cPay --( I_SvcPay
+        cCat --( I_SvcCat
+        cOrder --( I_SvcOrder
+    }
+
+    component "Notifier Adapter" as adp_notify ADAPTER_BG_COLOR
+    component "Bank Gateway" as adp_bank ADAPTER_BG_COLOR
+    component "Prisma ORM" as adp_prisma ADAPTER_BG_COLOR
+
+    () "Notify Interface" as I_Notify
+    () "Payment Interface" as I_Bank
+    () "DAL Interface" as I_DAL
+
+    adp_notify -left- I_Notify
+    adp_bank -left- I_Bank
+    adp_prisma -left- I_DAL
+
+    sPay --( I_Bank
+    sPay --( I_DAL
+
+    sCat --( I_DAL
+
+    sOrder --( I_Notify
+    sOrder --( I_DAL
+
+    () "SMTP/Webhook" as I_Ext_Notify
+    adp_notify -right-( I_Ext_Notify
+    I_Ext_Notify -right- ext_seller
+
+    () "REST API" as I_Ext_Bank
+    adp_bank -right-( I_Ext_Bank
+    I_Ext_Bank -right- ext_bank
+
+    () "SQL Connection" as I_Ext_SQL
+    adp_prisma -right-( I_Ext_SQL
+    I_Ext_SQL -right- ext_db
+}
+
+() "EntryPoint Config" as I_EntryConfig
+router -right-( I_EntryConfig
+router -right-( I_Validator
+
+I_EntryConfig -- p_ctrl_pay
+I_EntryConfig -- p_ctrl_cat
+I_EntryConfig -- p_ctrl_order
+
+@enduml
